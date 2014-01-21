@@ -7,10 +7,11 @@
 ; I'm probably doing something in a dumb way.
 
 ; Yes, there are CSV libraries that exist, but I did this as an exercise
-; This gets all of the costs as a 2D list
+; This gets all of the costs as a 2D vector
 (defn parse-city-data [csv]
 	(def row-strings (clojure.string/split csv #"\n"))
-	(map (comp (partial map #(Integer/parseInt %1)) #(clojure.string/split %1 #",")) row-strings))
+	(def as-list-of-lists (map (comp (partial map #(Integer/parseInt %1)) #(clojure.string/split %1 #",")) row-strings))
+	(vec (map vec as-list-of-lists)))
 
 ; Interface for getting information about the cities to visit
 (defprotocol City-Database
@@ -18,14 +19,14 @@
 	(travel-cost [this from to] (nth (nth city-data from) to)))
 
 ; Implementation of the interface that uses a 2D list parsed from a CSV
-(defrecord List-City-Database [list-city-data]
+(defrecord Seq-City-Database [list-city-data]
 	City-Database
 	(city-count [this] (count list-city-data))
 	(travel-cost [this from to] (nth (nth list-city-data from) to)))
 
 ; Convenience function for parsing a CSV and creating a database
 (defn city-database-from-csv [csv]
-	(->List-City-Database (parse-city-data csv)))
+	(->Seq-City-Database (parse-city-data csv)))
 
 ; Calculate the total distance of a route
 (defn route-cost [city-database route]
