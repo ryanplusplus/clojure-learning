@@ -19,10 +19,10 @@
 	(travel-cost [this from to] (nth (nth city-data from) to)))
 
 ; Implementation of the interface that uses a 2D list parsed from a CSV
-(defrecord Seq-City-Database [list-city-data]
+(defrecord Seq-City-Database [seq-city-data]
 	City-Database
-	(city-count [this] (count list-city-data))
-	(travel-cost [this from to] (nth (nth list-city-data from) to)))
+	(city-count [this] (count seq-city-data))
+	(travel-cost [this from to] (nth (nth seq-city-data from) to)))
 
 ; Convenience function for parsing a CSV and creating a database
 (defn city-database-from-csv [csv]
@@ -55,8 +55,8 @@
 
 	(reduce #(insert-optimally %1 %2) [0 0] (random-insertion-order)))
 
-(def lcd (city-database-from-csv (slurp "./city-data")))
+(def scd (city-database-from-csv (slurp "./city-data")))
 
-(def routes (repeatedly 100 (partial build-route lcd)))
-(def best-route (lowest-cost-route lcd routes))
-(println (route-cost lcd best-route) ": " best-route)
+(def routes (repeatedly 100 (partial build-route scd)))
+(def best-route (lowest-cost-route scd routes))
+(println (route-cost scd best-route) ": " best-route)
