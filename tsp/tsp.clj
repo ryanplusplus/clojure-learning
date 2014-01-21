@@ -33,6 +33,10 @@
 	(def distances (map #(apply travel-cost city-database %1) legs))
 	(apply + distances))
 
+; Select the lowest cost route
+(defn lowest-cost-route [city-database routes]
+	(apply (partial min-key (partial route-cost city-database)) routes))
+
 ; Heuristically builds a route
 ; @note This is non-deterministic
 (defn build-route [city-database]
@@ -42,7 +46,7 @@
 	(defn insert-optimally [route city]
 		(def insertion-indices (range 1 (count route)))
 		(def possible-routes (map #(insert-city route city %1) insertion-indices))
-		(first (sort-by #(route-cost city-database %1) possible-routes)))
+		(lowest-cost-route city-database possible-routes))
 
 	(defn random-insertion-order []
 		(def to-visit (drop 1 (range (city-count city-database))))
@@ -53,5 +57,5 @@
 (def lcd (city-database-from-csv (slurp "./city-data")))
 
 (def routes (repeatedly 100 (partial build-route lcd)))
-(def best-route (first (sort-by (partial route-cost lcd) routes)))
+(def best-route (lowest-cost-route lcd routes))
 (println (route-cost lcd best-route) ": " best-route)
