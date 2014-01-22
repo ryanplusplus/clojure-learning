@@ -30,7 +30,7 @@
 
 ; Calculate the total distance of a route
 (defn route-cost [city-database route]
-	(def legs (map vector route (drop 1 route)))
+	(def legs (map vector route (rest route)))
 	(def distances (map #(apply travel-cost city-database %1) legs))
 	(apply + distances))
 
