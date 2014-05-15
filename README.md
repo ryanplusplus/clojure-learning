@@ -1,4 +1,4 @@
-clojure-learning
+clojure-tsp
 ================
 
-Adventures in learning Clojure
+Simple traveling salesman solution in Clojure
